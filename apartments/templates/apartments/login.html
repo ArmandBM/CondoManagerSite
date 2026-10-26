@@ -1,0 +1,24 @@
+{% extends "apartments/base.html" %}
+{% block body %}
+<h1>Login</h1>
+<p>Login to your account:</p>
+<p>{{ error }}</p>
+<form class="pure-form pure-form-aligned" method="post">
+    {% csrf_token %}
+    <fieldset>
+        <div class="pure-control-group">
+            <label for="aligned-name">Username</label>
+            <input id="username" name="username" type="text" placeholder="Username" />
+            <span class="pure-form-message-inline">This is a required field.</span>
+        </div>
+        <div class="pure-control-group">
+            <label for="aligned-password">Password</label>
+            <input id="password" name="password" type="password" placeholder="Password" />
+        </div>
+        <div class="pure-controls">
+            <button type="submit" class="pure-button pure-button-primary">Log In</button>
+        </div>
+    </fieldset>
+</form>
+
+{% endblock %}  

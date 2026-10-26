@@ -1,0 +1,28 @@
+{% extends "apartments/base.html" %}
+{% block body %}
+<h1>Your packages, {{ user.first_name }}</h1>
+{% if error %}
+<p style="color: red;">{{ error }}</p>
+{% endif %}
+{% if packages %}
+<table>
+    <thead>
+        <tr>
+            <th>Package Name</th>
+            <th>Received</th>
+        </tr>
+        </thead>
+    <tbody>
+        {% for package in packages %}
+        <tr>
+            <td>{{ package.package_name }}</td>
+            <td>{{ package.received_at }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>You have no packages.</p>
+{% endif %}
+<a href="{% url 'index' %}">Back to Home</a>
+{% endblock %}

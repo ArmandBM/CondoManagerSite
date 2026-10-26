@@ -1,0 +1,36 @@
+{% extends "apartments/base.html" %}
+{% block body %}
+<h1>Complain</h1>
+{% if error%}
+<p style="color: red;">{{ error }}</p>
+{% endif %}
+<form class="pure-form pure-form-stacked" method="post">
+    {% csrf_token %}
+        <label for="complain">Log a Complain</label><br>
+        <textarea id="complain" name="complain" rows="4" cols="50"></textarea>
+        <button type="submit" class="pure-button pure-button-primary">Log a complain</button>
+</form>
+<br>
+{% if complains %}
+<h2>Your Complains</h2>
+<table class="pure-table pure-table-bordered">
+    <thead>
+        <tr>
+            <th>Complain</th>
+            <th>Status</th>
+            <th>Created on</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for complain in complains %}
+        <tr>
+            <td>{{ complain.complain_text }}</td>
+            <td>{{ complain.status }}</td>
+            <td>{{ complain.received_at }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+<a href="{% url 'index' %}">Back to Home</a>
+{% endblock %}
