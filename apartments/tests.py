@@ -38,3 +38,13 @@ class LoginViewTests(TestCase):
             response.context["error"],
             "Invalid username or password.",
         )
+
+    def test_authenticated_user_redirects_to_index(self):
+        self.client.force_login(self.user)
+        session_key = self.client.session.session_key
+
+        response = self.client.get(reverse("login"), follow=True)
+
+        self.assertRedirects(response, reverse("index"))
+        self.assertEqual(response.wsgi_request.user, self.user)
+        self.assertEqual(self.client.session.session_key, session_key)

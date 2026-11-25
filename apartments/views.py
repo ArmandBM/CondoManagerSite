@@ -29,7 +29,7 @@ def login_view(request):
             return render(request, "apartments/login.html", {
                 "title": "Login"
             })
-    #TODO: Treat case when the user is already logged in. Rare, but possible.
+    return HttpResponseRedirect(reverse("index"))
 
 def logout_redirect(request):
     logout(request)
