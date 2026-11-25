@@ -1,9 +1,9 @@
 {% extends "apartments/base.html" %}
 {% block body %}
 <h1>Complain</h1>
-{% if error%}
+{% for error in form.complain.errors %}
 <p style="color: red;">{{ error }}</p>
-{% endif %}
+{% endfor %}
 <form class="pure-form pure-form-stacked" method="post">
     {% csrf_token %}
         <label for="complain">Log a Complain</label><br>
