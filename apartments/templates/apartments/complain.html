@@ -25,7 +25,7 @@
         {% for complain in complains %}
         <tr>
             <td>{{ complain.complain_text }}</td>
-            <td>{{ complain.status }}</td>
+            <td>{{ complain.get_status_display }}</td>
             <td>{{ complain.received_at }}</td>
         </tr>
         {% endfor %}
