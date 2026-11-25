@@ -1,0 +1,90 @@
+name: Technical Debt Agent
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Criar PRs draft (false = somente diagnóstico)
+        type: boolean
+        default: false
+      max_prs:
+        description: Limite de candidatos a remediar (1 a 5)
+        type: choice
+        options: ['1','2','3','4','5']
+        default: '3'
+permissions: {}
+concurrency:
+  group: technical-debt-agent
+  cancel-in-progress: false
+jobs:
+  analyze:
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      issues: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install -g @openai/codex
+      - name: Collect context
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue list --state all --limit 50 --json number,title,body,state,comments > "$RUNNER_TEMP/context.json"
+          gh pr list --state all --limit 100 --json number,title,body,headRefName,state,comments >> "$RUNNER_TEMP/context.json"
+      - name: Analyze and propose changes
+        env:
+          CODEX_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DEBT_CONTEXT: ${{ runner.temp }}/context.json
+          PUBLISH: ${{ inputs.publish }}
+          MAX_PRS: ${{ inputs.max_prs }}
+        run: python technical-debt-agent/agent.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: debt-proposals
+          path: ../debt-output/
+  validate:
+    needs: analyze
+    if: inputs.publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: debt-proposals
+          path: ${{ runner.temp }}/proposals
+      - name: Validate patches without write credentials
+        run: python technical-debt-agent/validate.py "$RUNNER_TEMP/proposals" "$RUNNER_TEMP/validated"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: validated-proposals
+          path: ${{ runner.temp }}/validated/
+  publish:
+    needs: validate
+    if: inputs.publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: validated-proposals
+          path: ${{ runner.temp }}/validated
+      - name: Open draft PRs only
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASE: ${{ github.event.repository.default_branch }}
+        run: python technical-debt-agent/publish.py "$RUNNER_TEMP/validated"

@@ -1,0 +1,32 @@
+# Example project-specific remediation functions.
+# These thresholds and costs are illustrative, NOT universal SQALE defaults.
+# Calibrate them using your team's historical remediation times.
+version: 1
+
+rules:
+  python.cyclomatic_complexity:
+    description: Reduce excessive cyclomatic complexity in a function.
+    metric: cyclomatic_complexity
+    acceptable_threshold: 10
+    remediation_minutes_per_excess_unit: 15
+    category: complexity
+
+  python.function_length:
+    description: Decompose functions that exceed the agreed size threshold.
+    metric: function_lines
+    acceptable_threshold: 50
+    remediation_minutes_per_excess_unit: 2
+    category: maintainability
+
+  python.duplication:
+    description: Consolidate repeated logic when the abstractions remain cohesive.
+    metric: duplicated_lines
+    acceptable_threshold: 5
+    remediation_minutes_per_excess_unit: 3
+    category: duplication
+
+  sonar.effort:
+    description: Use the remediation effort reported by SonarQube for the issue.
+    metric: sonar_issue_effort
+    use_analyzer_effort_when_available: true
+    category: maintainability
