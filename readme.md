@@ -5,8 +5,9 @@ A small webapp that simulates a condo with residents' packages and complaints co
 ## Running the server
 
 ### Requirements:
-* Python 3+ (https://www.python.org/)
-* Django 6.1+ (https://www.djangoproject.com/download/)
+* Python 3.12 (the version used in CI)
+* Django 5.2.x, installed from the project requirements:
+  `python -m pip install -r requirements.txt`
 
 ### Running:
 

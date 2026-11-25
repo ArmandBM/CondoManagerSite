@@ -1,6 +1,16 @@
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from django.db import models
+from django.test import SimpleTestCase, TestCase
 from django.urls import reverse
+
+from .models import Apartment, Complains, Package, User
+
+
+class PrimaryKeyTests(SimpleTestCase):
+    def test_models_use_big_auto_field_for_primary_key(self):
+        for model in (Apartment, Complains, Package, User):
+            with self.subTest(model=model.__name__):
+                self.assertIsInstance(model._meta.pk, models.BigAutoField)
 
 
 class LoginViewTests(TestCase):
