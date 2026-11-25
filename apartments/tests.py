@@ -27,6 +27,16 @@ class LoginViewTests(TestCase):
             str(self.user.pk),
         )
 
+    def test_authenticated_user_is_redirected_with_session_preserved(self):
+        self.client.force_login(self.user)
+        session_key = self.client.session.session_key
+
+        response = self.client.get(reverse("login"))
+
+        self.assertRedirects(response, reverse("index"))
+        self.assertEqual(self.client.session.session_key, session_key)
+        self.assertEqual(self.client.session["_auth_user_id"], str(self.user.pk))
+
     def test_invalid_password_shows_error(self):
         response = self.client.post(
             reverse("login"),
