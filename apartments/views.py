@@ -57,12 +57,13 @@ def complains(request):
         complain_text = request.POST.get("complain")
         if complain_text:
             Complains.objects.create(user=request.user, complain_text=complain_text)
-        else:
-            return render(request, "apartments/complain.html", {
-                "title": "Complains",
-                "error": "Please enter a complaint before submitting.",
-                "complains": complains
-            })
+            return HttpResponseRedirect(reverse("complains"))
+
+        return render(request, "apartments/complain.html", {
+            "title": "Complains",
+            "error": "Please enter a complaint before submitting.",
+            "complains": complains
+        })
         
     return render(request, "apartments/complain.html", {
         "title": "Complains",
