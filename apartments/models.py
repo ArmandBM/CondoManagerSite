@@ -28,7 +28,7 @@ class Complains(models.Model):
         "RESOLVED": "Resolved",
         "IGNORED": "Ignored",
     }
-    status = models.CharField(max_length=10, choices=STATUS, default=STATUS["PENDING"])
+    status = models.CharField(max_length=10, choices=STATUS, default="PENDING")
 
     def __str__(self):
         return f"Complain by {self.user.username} at {self.received_at}: {self.complain_text}. Status: {self.status}"
