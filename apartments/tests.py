@@ -1,6 +1,47 @@
+from contextlib import redirect_stdout
+from io import StringIO
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
+
+from .models import Apartment, Complains, Package
+
+
+class ResidentListingPrivacyTests(TestCase):
+    def setUp(self):
+        apartment = Apartment.objects.create(name="SYN-101")
+        self.resident = get_user_model().objects.create_user(
+            username="synthetic-resident",
+            apartament=apartment,
+        )
+        self.complaint = Complains.objects.create(
+            user=self.resident,
+            complain_text="Synthetic complaint about the hallway",
+        )
+        self.package = Package.objects.create(
+            apartament=apartment,
+            package_name="Synthetic delivery",
+        )
+        self.client.force_login(self.resident)
+
+    def test_listings_render_without_writing_resident_data_to_stdout(self):
+        for view_name, expected_text in (
+            ("complains", self.complaint.complain_text),
+            ("packages", self.package.package_name),
+        ):
+            with self.subTest(view=view_name):
+                stdout = StringIO()
+                with redirect_stdout(stdout):
+                    response = self.client.get(reverse(view_name))
+
+                self.assertContains(response, expected_text)
+                for private_value in (
+                    self.resident.username,
+                    self.resident.apartament.name,
+                    self.complaint.complain_text,
+                ):
+                    self.assertNotIn(private_value, stdout.getvalue())
 
 
 class LoginViewTests(TestCase):

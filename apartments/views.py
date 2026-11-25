@@ -52,7 +52,6 @@ def packages(request):
 
 def complains(request):
     complains = Complains.objects.filter(user=request.user)
-    print('Complains for user ' + str(request.user) + ': ' + str(complains))
     if request.method =="POST":
         complain_text = request.POST.get("complain")
         if complain_text:
@@ -71,5 +70,4 @@ def complains(request):
 
 def getUserApartment(user):
     user = User.objects.get(id=user.id)
-    print('The user is ' + str(user))
     return user.apartament
