@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.views.decorators.http import require_POST
 from .models import User, Apartment, Complains, Package
 
 @login_required(login_url="login")
@@ -31,6 +32,7 @@ def login_view(request):
             })
     #TODO: Treat case when the user is already logged in. Rare, but possible.
 
+@require_POST
 def logout_redirect(request):
     logout(request)
     return HttpResponseRedirect(reverse("login"))
