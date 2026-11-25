@@ -29,6 +29,16 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+      - name: Verify Django installation
+        run: python -m django --version
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -60,6 +70,16 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+      - name: Verify Django installation
+        run: python -m django --version
       - uses: actions/download-artifact@v4
         with:
           name: debt-proposals
