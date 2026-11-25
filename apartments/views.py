@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from .forms import ComplaintForm
 from .models import User, Apartment, Complains, Package
 
 @login_required(login_url="login")
@@ -53,20 +54,19 @@ def packages(request):
 def complains(request):
     complains = Complains.objects.filter(user=request.user)
     print('Complains for user ' + str(request.user) + ': ' + str(complains))
-    if request.method =="POST":
-        complain_text = request.POST.get("complain")
-        if complain_text:
-            Complains.objects.create(user=request.user, complain_text=complain_text)
-        else:
-            return render(request, "apartments/complain.html", {
-                "title": "Complains",
-                "error": "Please enter a complaint before submitting.",
-                "complains": complains
-            })
-        
+    form = ComplaintForm()
+    if request.method == "POST":
+        form = ComplaintForm(request.POST)
+        if form.is_valid():
+            Complains.objects.create(
+                user=request.user,
+                complain_text=form.cleaned_data["complain"],
+            )
+
     return render(request, "apartments/complain.html", {
         "title": "Complains",
-        "complains": complains
+        "complains": complains,
+        "form": form,
     })
 
 def getUserApartment(user):
