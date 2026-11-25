@@ -1,0 +1,64 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "debts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "evidence": {
+            "type": "string"
+          },
+          "context": {
+            "type": "string"
+          },
+          "impact": {
+            "type": "string"
+          },
+          "solution": {
+            "type": "string"
+          },
+          "risk": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": "string"
+          },
+          "formula": {
+            "type": "string"
+          },
+          "test": {
+            "type": "string"
+          },
+          "minutes": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "category",
+          "title",
+          "evidence",
+          "context",
+          "impact",
+          "solution",
+          "risk",
+          "confidence",
+          "formula",
+          "test",
+          "minutes"
+        ]
+      }
+    }
+  },
+  "required": [
+    "debts"
+  ]
+}
