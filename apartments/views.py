@@ -35,6 +35,7 @@ def logout_redirect(request):
     logout(request)
     return HttpResponseRedirect(reverse("login"))
 
+@login_required(login_url="login")
 def packages(request):
     apartament = getUserApartment(request.user)
     if apartament is None:
@@ -50,6 +51,7 @@ def packages(request):
         "packages": packages
         })
 
+@login_required(login_url="login")
 def complains(request):
     complains = Complains.objects.filter(user=request.user)
     print('Complains for user ' + str(request.user) + ': ' + str(complains))
