@@ -11,7 +11,7 @@ def codex(prompt, output, cwd, schema=None):
     run(*cmd,prompt,cwd=cwd)
 
 def main():
-    out=ROOT.parent/'debt-output'; out.mkdir(exist_ok=True)
+    out=pathlib.Path(os.environ['RUNNER_TEMP']) / 'debt-output'; out.mkdir(parents=True, exist_ok=True)
     context=pathlib.Path(os.environ['DEBT_CONTEXT']).read_text()[:80000]
     with tempfile.TemporaryDirectory() as tmp:
         tmp=pathlib.Path(tmp)
